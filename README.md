@@ -10,4 +10,4 @@ An upgrade of the arkanoid game in BrickBreaker 1.2
 
 ## Game Picture :
 
-![Game image](https://)
+![Game image](https://github.com/T-Fluffy/BrickBreaker_1.2/blob/main/Shot.PNG)
