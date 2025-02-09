@@ -104,6 +104,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    // Check if all the bricks have been cleared
     private bool Cleared()
     {
         for (int i = 0; i < bricks.Length; i++)
