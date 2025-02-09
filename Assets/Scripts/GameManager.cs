@@ -84,7 +84,7 @@ public class GameManager : MonoBehaviour
     {
         // Start a new game immediately
         // You can also load a "GameOver" scene instead
-        NewGame();
+        SceneManager.LoadScene("LostGame");
     }
 
     private void NewGame()
@@ -121,5 +121,11 @@ public class GameManager : MonoBehaviour
 
         return true;
     }
+    #region UI
+        // UI button callbacks
+    public void RestartLevel() => LoadLevel(level);
+    public void StartGame() => NewGame();
+    public void ExitGame() => Application.Quit();
+    #endregion
 
 }

@@ -14,4 +14,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Level2.unity
     guid: f5dd193dc49a1dc4dace36c94594c6b5
+  - enabled: 1
+    path: Assets/Scenes/Win.unity
+    guid: 878c79670beabc146b244f6e0b76460a
+  - enabled: 1
+    path: Assets/Scenes/LostGame.unity
+    guid: 260cafcc1eb55fb42b504dc3bc946ed0
   m_configObjects: {}
