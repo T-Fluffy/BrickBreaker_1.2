@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour
     public int level { get; private set; } = 1;
     public int score { get; private set; } = 0;
     public int lives { get; private set; } = 3;
-
+    private bool levelCleared = false;
     private void Awake()
     {
         if (Instance != null) {
@@ -108,10 +108,14 @@ public class GameManager : MonoBehaviour
     {
         for (int i = 0; i < bricks.Length; i++)
         {
-            if (bricks[i] != null && bricks[i].gameObject.activeInHierarchy && !bricks[i].unbreakable) 
-            {
+            if (bricks[i].gameObject.activeInHierarchy && !bricks[i].unbreakable) {
                 return false;
             }
+        }
+        // Load the next level if there is one
+        if (!levelCleared && level < NUM_LEVELS) {
+            levelCleared = true;
+            LoadLevel(level + 1);
         }
 
         return true;
