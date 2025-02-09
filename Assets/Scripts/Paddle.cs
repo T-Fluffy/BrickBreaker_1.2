@@ -1,60 +1,68 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D))]
 public class Paddle : MonoBehaviour
 {
-    public new Rigidbody2D rigidbody { get; private set; }
-    public Vector2 direction { get; private set; }
-    public float speed = 1f;
+    private Rigidbody2D rb;
+    private Vector2 direction;
+
+    public float speed = 30f;
     public float maxBounceAngle = 75f;
+
+    private void Awake()
+    {
+        rb = GetComponent<Rigidbody2D>();
+    }
+
     private void Start()
     {
-        this.rigidbody = GetComponent<Rigidbody2D>();
+        ResetPaddle();
     }
-    private void Update()
-    {
-        if (Input.GetKey(KeyCode.A) || (Input.GetKey(KeyCode.LeftArrow)))
-        {
-            this.direction = Vector2.left;
-        }
-        else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
-        {
-            this.direction = Vector2.right;
-        }
-        else
-        {
-            this.direction = Vector2.zero;
-        }
-    }
-    private void FixedUpdate()
-    {
-        if (this.direction != Vector2.zero)
-        {
-            this.rigidbody.AddForce(this.direction * this.speed);
-        }
-    }
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        Ball ball = collision.gameObject.GetComponent<Ball>();
-        if (ball != null)
-        {
-            Vector3 paddlePosition = this.transform.position;
-            Vector2 contactPoint = collision.GetContact(0).point;
 
-            float offset = paddlePosition.x - contactPoint.x;
-            float width = collision.otherCollider.bounds.size.x / 2;
-
-            float currentAngle = Vector2.SignedAngle(Vector2.up, ball.rigidbody.velocity);
-            float bounceAngle = (offset / width) * this.maxBounceAngle;
-            float newAngle = Mathf.Clamp(currentAngle + bounceAngle, -this.maxBounceAngle, this.maxBounceAngle);
-            Quaternion rotation = Quaternion.AngleAxis(newAngle, Vector3.forward);
-            ball.rigidbody.velocity = rotation * Vector2.up * ball.rigidbody.velocity.magnitude;
-
-        }
-    }
     public void ResetPaddle()
     {
-        this.transform.position = new Vector2(0f, this.transform.position.y);
-        this.rigidbody.velocity = Vector2.zero;
-
+        rb.velocity = Vector2.zero;
+        transform.position = new Vector2(0f, transform.position.y);
     }
+
+    private void Update()
+    {
+        if (Input.GetKey(KeyCode.Q) || Input.GetKey(KeyCode.LeftArrow)) {
+            direction = Vector2.left;
+        } else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) {
+            direction = Vector2.right;
+        } else {
+            direction = Vector2.zero;
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        if (direction != Vector2.zero) {
+            rb.AddForce(direction * speed);
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (!collision.gameObject.CompareTag("Ball")) {
+            return;
+        }
+
+        Rigidbody2D ball = collision.rigidbody;
+        Collider2D paddle = collision.otherCollider;
+
+        // Gather information about the collision
+        Vector2 ballDirection = ball.velocity.normalized;
+        Vector2 contactDistance = paddle.bounds.center - ball.transform.position;
+
+        // Rotate the direction of the ball based on the contact distance
+        // to make the gameplay more dynamic and interesting
+        float bounceAngle = (contactDistance.x / paddle.bounds.size.x) * maxBounceAngle;
+        ballDirection = Quaternion.AngleAxis(bounceAngle, Vector3.forward) * ballDirection;
+
+        // Re-apply the new direction to the ball
+        ball.velocity = ballDirection * ball.velocity.magnitude;
+    }
+
 }

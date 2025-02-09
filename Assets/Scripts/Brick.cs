@@ -1,51 +1,60 @@
 using UnityEngine;
 
+[RequireComponent(typeof(BoxCollider2D))]
 public class Brick : MonoBehaviour
 {
-    public SpriteRenderer spriteRenderer { get; private set; }
-    public Sprite[] states;
-    public int health { get; private set; }
-    public bool unbreakable = false;
+    public Sprite[] states = new Sprite[0];
     public int points = 100;
+    public bool unbreakable;
+
+    private SpriteRenderer spriteRenderer;
+    private int health;
+
     private void Awake()
     {
-        this.spriteRenderer = GetComponent<SpriteRenderer>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
+
     private void Start()
     {
-        ResetBricks();
+        ResetBrick();
     }
+
+    public void ResetBrick()
+    {
+        gameObject.SetActive(true);
+
+        if (!unbreakable)
+        {
+            health = states.Length;
+            spriteRenderer.sprite = states[health - 1];
+        }
+    }
+
+    private void Hit()
+    {
+        if (unbreakable) {
+            return;
+        }
+
+        health--;
+
+        if (health <= 0) {
+            gameObject.SetActive(false);
+        } else {
+            spriteRenderer.sprite = states[health - 1];
+        }
+
+        if (GameManager.Instance != null) {
+            GameManager.Instance.OnBrickHit(this);
+        }
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.name == "Ball")
-        {
+        if (collision.gameObject.name == "Ball") {
             Hit();
         }
     }
-    private void Hit()
-    {
-        if (this.unbreakable)
-        {
-            return;
-        }
-        this.health--;
-        if (this.health <= 0)
-        {
-            this.gameObject.SetActive(false);
-        }
-        else
-        {
-            this.spriteRenderer.sprite = this.states[this.health - 1];
-        }
-        FindObjectOfType<GameManager>().Hit(this);
-    }
-    public void ResetBricks()
-    {
-        this.gameObject.SetActive(true);
-        if (!this.unbreakable)
-        {
-            this.health = this.states.Length;
-            this.spriteRenderer.sprite = this.states[this.health - 1];
-        }
-    }
+
 }
