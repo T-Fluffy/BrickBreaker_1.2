@@ -18,9 +18,12 @@ public class GameManager : MonoBehaviour
     private bool levelCleared = false;
     private void Awake()
     {
-        if (Instance != null) {
+        if (Instance != null)
+        {
             DestroyImmediate(gameObject);
-        } else {
+        }
+        else
+        {
             Instance = this;
             DontDestroyOnLoad(gameObject);
             FindSceneReferences();
@@ -29,7 +32,8 @@ public class GameManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (Instance == this) {
+        if (Instance == this)
+        {
             Instance = null;
         }
     }
@@ -67,9 +71,12 @@ public class GameManager : MonoBehaviour
     {
         lives--;
 
-        if (lives > 0) {
+        if (lives > 0)
+        {
             ResetLevel();
-        } else {
+        }
+        else
+        {
             GameOver();
         }
     }
@@ -99,7 +106,8 @@ public class GameManager : MonoBehaviour
     {
         score += brick.points;
 
-        if (Cleared()) {
+        if (Cleared())
+        {
             LoadLevel(level + 1);
         }
     }
@@ -109,12 +117,14 @@ public class GameManager : MonoBehaviour
     {
         for (int i = 0; i < bricks.Length; i++)
         {
-            if (bricks[i].gameObject.activeInHierarchy && !bricks[i].unbreakable) {
+            if (bricks[i].gameObject.activeInHierarchy && !bricks[i].unbreakable)
+            {
                 return false;
             }
         }
         // Load the next level if there is one
-        if (!levelCleared && level < NUM_LEVELS) {
+        if (!levelCleared && level < NUM_LEVELS)
+        {
             levelCleared = true;
             LoadLevel(level + 1);
         }
@@ -122,8 +132,8 @@ public class GameManager : MonoBehaviour
         return true;
     }
     #region UI
-        // UI button callbacks
-    public void RestartLevel() => LoadLevel(level);
+    // UI button callbacks
+    public void RestartLevel() => LoadLevel(1);
     public void StartGame() => NewGame();
     public void ExitGame() => Application.Quit();
     #endregion
